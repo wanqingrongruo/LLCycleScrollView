@@ -9,22 +9,21 @@
 import UIKit
 
 class TableViewController: UITableViewController {
-    
+
     let titles = ["感谢您的支持",
                   "如果代码在使用过程中出现问题",
                   "您可以发邮件到coderjianfeng@foxmail.com您可以发邮件到coderjianfeng@foxmail.com您可以发邮件到coderjianfeng@foxmail.com"
-    ];
+    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "CELL")
-        
+
         // header
         // 纯文本demo
-        let titleHeaderDemo = LLCycleScrollView.llCycleScrollViewWithTitles(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height:20)) { (index) in
+        let titleHeaderDemo = LLCycleScrollView.llCycleScrollViewWithTitles(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 20)) { (index) in
             print("当前点击文本的位置为:\(index)")
         }
-        
+
         titleHeaderDemo.customPageControlStyle = .none
         titleHeaderDemo.scrollDirection = .vertical
         titleHeaderDemo.font = UIFont.systemFont(ofSize: 13)
@@ -51,7 +50,7 @@ class TableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
+
         return 10
     }
 

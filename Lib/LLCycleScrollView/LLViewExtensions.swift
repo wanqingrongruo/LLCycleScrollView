@@ -10,37 +10,37 @@ import UIKit
 
 // MARK: Frame
 extension UIView {
-    public var ll_x: CGFloat {
+    public var frameX: CGFloat {
         get {
-            return self.frame.origin.x
+            return frame.origin.x
         }
         set(value) {
-            self.frame = CGRect(x: value, y: self.ll_y, width: self.ll_w, height: self.ll_h)
+            self.frame = CGRect(x: value, y: frameY, width: frameW, height: frameH)
         }
     }
-    
-    public var ll_y: CGFloat {
+
+    public var frameY: CGFloat {
         get {
             return self.frame.origin.y
         }
         set(value) {
-            self.frame = CGRect(x: self.ll_x, y: value, width: self.ll_w, height: self.ll_h)
+            self.frame = CGRect(x: frameX, y: value, width: frameW, height: frameH)
         }
     }
-    
-    public var ll_w: CGFloat {
+
+    public var frameW: CGFloat {
         get {
             return self.frame.size.width
         } set(value) {
-            self.frame = CGRect(x: self.ll_x, y: self.ll_y, width: value, height: self.ll_h)
+            self.frame = CGRect(x: frameX, y: frameY, width: value, height: frameH)
         }
     }
-    
-    public var ll_h: CGFloat {
+
+    public var frameH: CGFloat {
         get {
             return self.frame.size.height
         } set(value) {
-            self.frame = CGRect(x: self.ll_x, y: self.ll_y, width: self.ll_w, height: value)
+            self.frame = CGRect(x: frameX, y: frameY, width: frameW, height: value)
         }
     }
 }

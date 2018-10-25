@@ -10,9 +10,9 @@
 import UIKit
 
 open class LLSnakePageControl: UIView {
-    
+
     // MARK: - PageControl
-    
+
     open var pageCount: Int = 0 {
         didSet {
             updateNumberOfPages(pageCount)
@@ -26,10 +26,9 @@ open class LLSnakePageControl: UIView {
     open var currentPage: Int {
         return Int(round(progress))
     }
-    
-    
+
     // MARK: - Appearance
-    
+
     open var activeTint: UIColor = UIColor.white {
         didSet {
             activeLayer.backgroundColor = activeTint.cgColor
@@ -37,7 +36,7 @@ open class LLSnakePageControl: UIView {
     }
     open var inactiveTint: UIColor = UIColor(white: 1, alpha: 0.3) {
         didSet {
-            inactiveLayers.forEach() { $0.backgroundColor = inactiveTint.cgColor }
+            inactiveLayers.forEach { $0.backgroundColor = inactiveTint.cgColor }
         }
     }
     open var indicatorPadding: CGFloat = 10 {
@@ -50,7 +49,7 @@ open class LLSnakePageControl: UIView {
             layoutInactivePageIndicators(inactiveLayers)
         }
     }
-    
+
     fileprivate var indicatorDiameter: CGFloat {
         return indicatorRadius * 2
     }
@@ -67,7 +66,7 @@ open class LLSnakePageControl: UIView {
             "position": NSNull()]
         return layer
         }()
-    
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         pageCount = 0
@@ -75,21 +74,21 @@ open class LLSnakePageControl: UIView {
         indicatorPadding = 8
         indicatorRadius = 4
     }
-    
+
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - State Update
-    
+
     fileprivate func updateNumberOfPages(_ count: Int) {
         // no need to update
         guard count != inactiveLayers.count else { return }
         // reset current layout
-        inactiveLayers.forEach() { $0.removeFromSuperlayer() }
+        inactiveLayers.forEach { $0.removeFromSuperlayer() }
         inactiveLayers = [CALayer]()
         // add layers for new page count
-        inactiveLayers = stride(from: 0, to:count, by:1).map() { _ in
+        inactiveLayers = stride(from: 0, to: count, by: 1).map { _ in
             let layer = CALayer()
             layer.backgroundColor = self.inactiveTint.cgColor
             self.layer.addSublayer(layer)
@@ -101,10 +100,9 @@ open class LLSnakePageControl: UIView {
         layoutActivePageIndicator(progress)
         self.invalidateIntrinsicContentSize()
     }
-    
-    
+
     // MARK: - Layout
-    
+
     fileprivate func layoutActivePageIndicator(_ progress: CGFloat) {
         // ignore if progress is outside of page indicators' bounds
         guard progress >= 0 && progress <= CGFloat(pageCount - 1) else { return }
@@ -116,11 +114,11 @@ open class LLSnakePageControl: UIView {
         newFrame.size.width = newFrame.height * widthMultiplier
         activeLayer.frame = newFrame
     }
-    
+
     fileprivate func layoutInactivePageIndicators(_ layers: [CALayer]) {
         let layerDiameter = indicatorRadius * 2
         var layerFrame = CGRect(x: 0, y: 0, width: layerDiameter, height: layerDiameter)
-        layers.forEach() { layer in
+        layers.forEach { layer in
             layer.cornerRadius = self.indicatorRadius
             layer.frame = layerFrame
             layerFrame.origin.x += layerDiameter + indicatorPadding
@@ -130,11 +128,11 @@ open class LLSnakePageControl: UIView {
         let width = CGFloat(inactiveLayers.count) * indicatorDiameter + CGFloat(inactiveLayers.count - 1) * indicatorPadding
         self.frame = CGRect.init(x: UIScreen.main.bounds.width / 2 - width / 2, y: oldFrame.origin.y, width: width, height: oldFrame.size.height)
     }
-    
+
     override open var intrinsicContentSize: CGSize {
         return sizeThatFits(CGSize.zero)
     }
-    
+
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize(width: CGFloat(inactiveLayers.count) * indicatorDiameter + CGFloat(inactiveLayers.count - 1) * indicatorPadding,
                       height: indicatorDiameter)
