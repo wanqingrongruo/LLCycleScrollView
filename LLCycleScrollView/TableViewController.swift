@@ -20,7 +20,9 @@ class TableViewController: UITableViewController {
 
         // header
         // 纯文本demo
-        let titleHeaderDemo = LLCycleScrollView.llCycleScrollViewWithTitles(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 20)) { (index) in
+        let titleHeaderDemo = LLCycleScrollView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 20),
+                                                imageURLPaths: [],
+                                                titles: titles) { (index) in
             print("当前点击文本的位置为:\(index)")
         }
 
@@ -33,9 +35,6 @@ class TableViewController: UITableViewController {
         // 文本　Leading约束
         titleHeaderDemo.titleLeading = 30
         tableView.tableHeaderView = titleHeaderDemo
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2)) {
-            titleHeaderDemo.titles = self.titles
-        }
     }
 
     override func didReceiveMemoryWarning() {

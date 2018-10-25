@@ -40,10 +40,6 @@ class ViewController: UIViewController {
                       "您可以发邮件到coderjianfeng@foxmail.com您可以发邮件到coderjianfeng@foxmail.com"
                       ]
 
-        // Storyboard Demo
-        self.storyBoardBanner.imagePaths = imagesURLStrings
-        self.storyBoardBanner.titles = titles
-
         // 新增图片显示控制
         self.storyBoardBanner.imageViewContentMode = .scaleToFill
         self.storyBoardBanner.customPageControlStyle = .image
@@ -58,7 +54,7 @@ class ViewController: UIViewController {
         self.storyBoardBanner.delegate = self
 
         // 纯文本demo
-        let titleDemo = LLCycleScrollView.llCycleScrollViewWithTitles(frame: CGRect.init(x: 0, y: self.storyBoardBanner.frameY + 190, width: w, height: 70)) { (index) in
+        let titleDemo = LLCycleScrollView(frame: CGRect(x: 0, y: self.storyBoardBanner.frameY + 190, width: w, height: 70), imageURLPaths: [], titles: titles) { (index) in
             print("当前点击文本的位置为:\(index)")
         }
 
@@ -71,21 +67,12 @@ class ViewController: UIViewController {
         // 文本　Leading约束
         titleDemo.titleLeading = 30
         scrollView.addSubview(titleDemo)
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2)) {
-            titleDemo.titles = titles
-        }
 
         // Demo--点击回调
-        let bannerDemo = LLCycleScrollView.llCycleScrollViewWithFrame(CGRect(x: 0, y: titleDemo.frameY + 80, width: w, height: 200),
-                                                                      imageURLPaths: imagesURLStrings,
-                                                                      titles: nil,
-                                                                      didSelectItemAtIndex: { index in
+        let bannerDemo = LLCycleScrollView(frame: CGRect(x: 0, y: titleDemo.frameY + 80, width: w, height: 200), imageURLPaths: imagesURLStrings, titles: []) { (index) in
             print("当前点击图片的位置为:\(index)")
-        })
-
-        bannerDemo.lldidSelectItemAtIndex = { index in
-
         }
+
         bannerDemo.customPageControlStyle = .fill
         bannerDemo.customPageControlInActiveTintColor = UIColor.red
         bannerDemo.pageControlPosition = .left
@@ -95,29 +82,13 @@ class ViewController: UIViewController {
         bannerDemo.pageControlBottom = 15
         scrollView.addSubview(bannerDemo)
 
-        /*
-        // Demo--延时加载数据之滚动方向控制
-        let bannerDemo1 = LLCycleScrollView.llCycleScrollViewWithFrame(CGRect.init(x: 0, y: bannerDemo.frameY + 205, width: w, height: 200))
-        // 垂直滚动
-        bannerDemo1.scrollDirection = .vertical
-        bannerDemo1.customPageControlStyle = .snake
-        scrollView.addSubview(bannerDemo1)
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2)) {
-            bannerDemo1.imagePaths = imagesURLStrings
-        }
-         */
-
         // Demo--带左右箭头
-        let bannerDemo1 = LLCycleScrollView.llCycleScrollViewWithArrow(CGRect(x: 0, y: bannerDemo.frameY + 205, width: w, height: 200),
-                                                                       arrowLRImages: [UIImage(named: "ico-two-left-arrow")!, UIImage(named: "ico-two-right-arrow")!],
-                                                                       imageURLPaths: imagesURLStrings,
-                                                                       titles: nil,
-                                                                       didSelectItemAtIndex: { index in
+        let bannerDemo1 = LLCycleScrollView(frame: CGRect(x: 0, y: bannerDemo.frameY + 205, width: w, height: 200),
+                                            arrowLRImages: [UIImage(named: "ico-two-left-arrow")!, UIImage(named: "ico-two-right-arrow")!],
+                                            arrowLRFrame: nil,
+                                            imageURLPaths: imagesURLStrings,
+                                            titles: []) { (index) in
             print("当前点击图片的位置为:\(index)")
-        })
-
-        bannerDemo1.lldidSelectItemAtIndex = { index in
-
         }
         bannerDemo1.customPageControlStyle = .snake
         bannerDemo1.customPageControlInActiveTintColor = UIColor.red
@@ -129,7 +100,7 @@ class ViewController: UIViewController {
         scrollView.addSubview(bannerDemo1)
 
         // Demo--其他属性
-        bannerDemo2 = LLCycleScrollView.llCycleScrollViewWithFrame(CGRect.init(x: 0, y: bannerDemo1.frameY + 205, width: w, height: 200))
+        bannerDemo2 = LLCycleScrollView(frame: CGRect(x: 0, y: bannerDemo1.frameY + 205, width: w, height: 200), imageURLPaths: imagesURLStrings, titles: titles, didSelectItemAtIndex: nil)
         // 滚动间隔时间
         bannerDemo2.autoScrollTimeInterval = 3.0
         // 加载状态图
@@ -138,11 +109,7 @@ class ViewController: UIViewController {
         bannerDemo2.coverImage = #imageLiteral(resourceName: "s2")
         bannerDemo2.customPageControlStyle = .none
         scrollView.addSubview(bannerDemo2)
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2)) {
-            self.bannerDemo2.imagePaths = imagesURLStrings
-            self.bannerDemo2.titles = titles
-        }
-        scrollView.contentSize = CGSize.init(width: 0, height: bannerDemo2.frameY+220)
+        scrollView.contentSize = CGSize(width: 0, height: bannerDemo2.frameY+220)
     }
 
     override func didReceiveMemoryWarning() {

@@ -36,43 +36,86 @@ public enum PageControlPosition {
 public typealias LLdidSelectItemAtIndexClosure = (NSInteger) -> Void
 
 open class LLCycleScrollView: UIView {
-    // MAKR: DataSource
-    /// Image Paths
-    open var imagePaths: [String] = [] {
-        didSet {
-            totalItemsCount = infiniteLoop ? imagePaths.count * 100 : imagePaths.count
-            if imagePaths.count > 1 {
-                collectionView.isScrollEnabled = true
-            } else {
-                collectionView.isScrollEnabled = false
-                invalidateTimer()
-            }
 
-            setupPageControl()
+    // MARK: - init
 
-            collectionView.reloadData()
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupMainView()
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setupMainView()
+    }
+
+    public convenience init(frame: CGRect,
+                            imageURLPaths: [String],
+                            titles: [String],
+                            didSelectItemAtIndex: LLdidSelectItemAtIndexClosure?) {
+        self.init(frame: frame)
+        self.imagePaths = imageURLPaths
+        self.titles = titles
+        self.lldidSelectItemAtIndex = didSelectItemAtIndex
+        compatibeData()
+        render()
+    }
+
+    public convenience init(frame: CGRect,
+                            backImage: UIImage?,
+                            titles: [String],
+                            didSelectItemAtIndex: LLdidSelectItemAtIndexClosure?) {
+        self.init(frame: frame, imageURLPaths: [], titles: titles, didSelectItemAtIndex: didSelectItemAtIndex)
+        self.isOnlyTitle = true
+        self.coverImage = backImage
+    }
+
+    public convenience init(frame: CGRect,
+                            arrowLRImages: [UIImage],
+                            arrowLRFrame: [CGRect]?,
+                            imageURLPaths: [String],
+                            titles: [String],
+                            didSelectItemAtIndex: LLdidSelectItemAtIndexClosure?) {
+        self.init(frame: frame, imageURLPaths: imageURLPaths, titles: titles, didSelectItemAtIndex: didSelectItemAtIndex)
+        self.arrowLRIcon = arrowLRImages
+        self.arrowLRFrame = arrowLRFrame
+        setupArrowIcon()
+    }
+
+    private var imagePaths: [String] = []
+    private var titles: [String] = []
+
+    private func compatibeData() {
+        if titles.count > 0  && imagePaths.count == 0 {
+            imagePaths = titles
         }
     }
 
-    /// Titles
-    open var titles: [String] = [] {
+    private func render() {
+        totalItemsCount = infiniteLoop ? imagePaths.count * mutipleCopy : imagePaths.count
+        if imagePaths.count > 1 {
+            collectionView.isScrollEnabled = true
+        } else {
+            collectionView.isScrollEnabled = false
+            invalidateTimer()
+        }
+
+        setupPageControl()
+
+        collectionView.reloadData()
+    }
+
+    open var mutipleCopy: Int = 50 {
         didSet {
-            if titles.count > 0 {
-                if imagePaths.count == 0 {
-                    imagePaths = titles
-                }
-            }
+            totalItemsCount = infiniteLoop ? imagePaths.count * mutipleCopy : imagePaths.count
         }
     }
 
-    // MARK: - Closure
-    /// 回调
     open var lldidSelectItemAtIndex: LLdidSelectItemAtIndexClosure?
-
-    /// 协议
     open weak var delegate: LLCycleScrollViewDelegate?
 
     // MARK: - Config
+
     /// 自动轮播- 默认true
     open var autoScroll: Bool = true {
         didSet {
@@ -85,14 +128,7 @@ open class LLCycleScrollView: UIView {
     }
 
     /// 无限循环- 默认true，此属性修改了就不存在轮播的意义了
-    open var infiniteLoop: Bool = true {
-        didSet {
-            if imagePaths.count > 0 {
-                let temp = imagePaths
-                imagePaths = temp
-            }
-        }
-    }
+    open var infiniteLoop: Bool = true
 
     /// 滚动方向，默认horizontal
     open var scrollDirection: UICollectionView.ScrollDirection? = .horizontal {
@@ -120,8 +156,8 @@ open class LLCycleScrollView: UIView {
     /// Load Placeholder Image
     open var placeHolderImage: UIImage? = nil {
         didSet {
-            if placeHolderImage != nil {
-                placeHolderViewImage = placeHolderImage
+            if let placeholderImage = placeHolderImage {
+                placeHolderViewImage = placeholderImage
             }
         }
     }
@@ -129,8 +165,8 @@ open class LLCycleScrollView: UIView {
     /// No Data Placeholder Image
     open var coverImage: UIImage? = nil {
         didSet {
-            if coverImage != nil {
-                coverViewImage = coverImage
+            if let corverImage = coverImage {
+                coverViewImage = corverImage
             }
         }
     }
@@ -261,7 +297,7 @@ open class LLCycleScrollView: UIView {
 
     // MARK: - Private
     /// 总数量
-    fileprivate var totalItemsCount: NSInteger! = 1
+    fileprivate var totalItemsCount: Int = 0
 
     /// 最大伸展空间(防止出现问题，可外部设置)
     /// 用于反方向滑动的时候，需要知道最大的contentSize
@@ -298,133 +334,6 @@ open class LLCycleScrollView: UIView {
         tempFlowLayout.scrollDirection = .horizontal
         return tempFlowLayout
     }()
-
-    /// Init
-    ///
-    /// - Parameter frame: CGRect
-    override internal init(frame: CGRect) {
-        super.init(frame: frame)
-        setupMainView()
-    }
-
-    /// Init
-    ///
-    /// - Parameter aDecoder: NSCoder
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupMainView()
-    }
-}
-
-// MARK: 类初始化
-extension LLCycleScrollView {
-    /// 默认初始化
-    ///
-    /// - Parameters:
-    ///   - frame: Frame
-    ///   - imageURLPaths: URL Path Array
-    ///   - titles: Title Array
-    ///   - didSelectItemAtIndex: Closure
-    /// - Returns: LLCycleScrollView
-    open class func llCycleScrollViewWithFrame(_ frame: CGRect,
-                                               imageURLPaths: [String]? = [],
-                                               titles: [String]? = [],
-                                               didSelectItemAtIndex: LLdidSelectItemAtIndexClosure? = nil) -> LLCycleScrollView {
-        let llcycleScrollView: LLCycleScrollView = LLCycleScrollView.init(frame: frame)
-        // Nil
-        llcycleScrollView.imagePaths = []
-        llcycleScrollView.titles = []
-
-        if let imageURLPathList = imageURLPaths, imageURLPathList.count > 0 {
-            llcycleScrollView.imagePaths = imageURLPathList
-        }
-
-        if let titleList = titles, titleList.count > 0 {
-            llcycleScrollView.titles = titleList
-        }
-
-        if didSelectItemAtIndex != nil {
-            llcycleScrollView.lldidSelectItemAtIndex = didSelectItemAtIndex
-        }
-        return llcycleScrollView
-    }
-
-    /// 纯文本
-    ///
-    /// - Parameters:
-    ///   - frame: Frame
-    ///   - backImage: Background Image
-    ///   - titles: Title Array
-    ///   - didSelectItemAtIndex: Closure
-    /// - Returns: LLCycleScrollView
-    open class func llCycleScrollViewWithTitles(frame: CGRect,
-                                                backImage: UIImage? = nil,
-                                                titles: [String]? = [],
-                                                didSelectItemAtIndex: LLdidSelectItemAtIndexClosure? = nil) -> LLCycleScrollView {
-        let llcycleScrollView: LLCycleScrollView = LLCycleScrollView.init(frame: frame)
-        // Nil
-        llcycleScrollView.titles = []
-
-        if let backImage = backImage {
-            // 异步加载数据时候，第一个页面会出现placeholder image，可以用backImage来设置纯色图片等其他方式
-            llcycleScrollView.coverImage = backImage
-        }
-
-        // Set isOnlyTitle
-        llcycleScrollView.isOnlyTitle = true
-
-        // Titles Data
-        if let titleList = titles, titleList.count > 0 {
-            llcycleScrollView.titles = titleList
-        }
-
-        if didSelectItemAtIndex != nil {
-            llcycleScrollView.lldidSelectItemAtIndex = didSelectItemAtIndex
-        }
-        return llcycleScrollView
-    }
-
-    /// 支持箭头初始化
-    ///
-    /// - Parameters:
-    ///   - frame: Frame
-    ///   - arrowLRImages: [LeftImage, RightImage]
-    ///   - arrowLRPoint: [LeffImage.CGPoint, RightImage.CGPoint], default nil (center)
-    ///   - imageURLPaths: URL Path Array
-    ///   - titles: Title Array
-    ///   - didSelectItemAtIndex: Closure
-    /// - Returns: LLCycleScrollView
-    open class func llCycleScrollViewWithArrow(_ frame: CGRect,
-                                               arrowLRImages: [UIImage],
-                                               arrowLRFrame: [CGRect]? = nil,
-                                               imageURLPaths: [String]? = [],
-                                               titles: [String]? = [],
-                                               didSelectItemAtIndex: LLdidSelectItemAtIndexClosure? = nil) -> LLCycleScrollView {
-        let llcycleScrollView: LLCycleScrollView = LLCycleScrollView.init(frame: frame)
-        // Nil
-        llcycleScrollView.imagePaths = []
-        llcycleScrollView.titles = []
-
-        // Images
-        llcycleScrollView.arrowLRIcon = arrowLRImages
-        llcycleScrollView.arrowLRFrame = arrowLRFrame
-
-        // Setup
-        llcycleScrollView.setupArrowIcon()
-
-        if let imageURLPathList = imageURLPaths, imageURLPathList.count > 0 {
-            llcycleScrollView.imagePaths = imageURLPathList
-        }
-
-        if let titleList = titles, titleList.count > 0 {
-            llcycleScrollView.titles = titleList
-        }
-
-        if didSelectItemAtIndex != nil {
-            llcycleScrollView.lldidSelectItemAtIndex = didSelectItemAtIndex
-        }
-        return llcycleScrollView
-    }
 }
 
 // MARK: UI
