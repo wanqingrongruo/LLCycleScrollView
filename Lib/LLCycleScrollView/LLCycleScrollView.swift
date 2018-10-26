@@ -9,16 +9,6 @@
 import UIKit
 import Kingfisher
 
-/// Style
-public enum PageControlStyle {
-    case none
-    case system
-    case fill
-    case pill
-    case snake
-    case image
-}
-
 /// Position
 public enum PageControlPosition {
     case center
@@ -179,21 +169,11 @@ open class LLCycleScrollView: UIView {
         }
     }
 
-    // MARK: Title
-    /// Color
-    open var textColor: UIColor = UIColor.white
-
-    /// Number Lines
-    open var numberOfLines: NSInteger = 2
-
-    /// Title Leading
-    open var titleLeading: CGFloat = 15
-
-    /// Font
-    open var font: UIFont = UIFont.systemFont(ofSize: 15)
-
-    /// Background
-    open var titleBackgroundColor: UIColor = UIColor.black.withAlphaComponent(0.3)
+    open var labelSetting: LabelSetting = LabelSetting() {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
 
     // MARK: Arrow Icon
     /// Icon - [LeftIcon, RightIcon]
@@ -207,42 +187,7 @@ open class LLCycleScrollView: UIView {
     /// PageControl
     open var pageControl: UIPageControl?
 
-    /// Tint Color
-    open var pageControlTintColor: UIColor = UIColor.lightGray {
-        didSet {
-            setupPageControl()
-        }
-    }
-    // InActive Color
-    open var pageControlCurrentPageColor: UIColor = UIColor.white {
-        didSet {
-            setupPageControl()
-        }
-    }
-
-    /// Radius [PageControlStyle == .fill]
-    open var FillPageControlIndicatorRadius: CGFloat = 4 {
-        didSet {
-            setupPageControl()
-        }
-    }
-
-    /// Active Tint Color [PageControlStyle == .pill || PageControlStyle == .snake]
-    open var customPageControlInActiveTintColor: UIColor = UIColor(white: 1, alpha: 0.3) {
-        didSet {
-            setupPageControl()
-        }
-    }
-
-    /// Active Image [PageControlStyle == .system]
-    open var pageControlActiveImage: UIImage? = nil {
-        didSet {
-            setupPageControl()
-        }
-    }
-
-    /// In Active Image [PageControlStyle == .system]
-    open var pageControlInActiveImage: UIImage? = nil {
+    open var pageControlSetting: PageControlSetting = PageControlSetting() {
         didSet {
             setupPageControl()
         }
@@ -251,32 +196,6 @@ open class LLCycleScrollView: UIView {
     // MARK: CustomPageControl
     /// Custom PageControl
     open var customPageControl: UIView?
-
-    /// Style [.fill, .pill, .snake]
-    open var customPageControlStyle: PageControlStyle = .system {
-        didSet {
-            setupPageControl()
-        }
-    }
-    /// Tint Color
-    open var customPageControlTintColor: UIColor = UIColor.white {
-        didSet {
-            setupPageControl()
-        }
-    }
-    /// Indicator Padding
-    open var customPageControlIndicatorPadding: CGFloat = 8 {
-        didSet {
-            setupPageControl()
-        }
-    }
-
-    /// Position
-    open var pageControlPosition: PageControlPosition = .center {
-        didSet {
-            setupPageControl()
-        }
-    }
 
     /// Leading
     open var pageControlLeadingOrTrialingContact: CGFloat = 28 {
@@ -359,7 +278,7 @@ extension LLCycleScrollView {
             return
         }
 
-        guard let ali = arrowLRIcon else {
+        guard let ali = arrowLRIcon, ali.count > 0 else {
             assertionFailure("初始化方向图片`arrowLRIcon`数据为空.")
             return
         }
@@ -382,7 +301,7 @@ extension LLCycleScrollView {
         leftImageView.contentMode = .left
         leftImageView.tag = 0
         leftImageView.isUserInteractionEnabled = true
-        leftImageView.image = ali.first!
+        leftImageView.image = ali[0]
         leftImageView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(scrollByDirection(_:))))
         self.addSubview(leftImageView)
 
@@ -417,8 +336,8 @@ extension LLCycleScrollView {
 
         if customPageControlStyle == .system {
             pageControl = UIPageControl.init()
-            pageControl?.pageIndicatorTintColor = pageControlTintColor
-            pageControl?.currentPageIndicatorTintColor = pageControlCurrentPageColor
+            pageControl?.pageIndicatorTintColor = pageControlSetting.pageControlTintColor
+            pageControl?.currentPageIndicatorTintColor = pageControlSetting.pageControlCurrentPageColor
             pageControl?.numberOfPages = self.imagePaths.count
             self.addSubview(pageControl!)
             pageControl?.isHidden = false
@@ -426,28 +345,28 @@ extension LLCycleScrollView {
 
         if customPageControlStyle == .fill {
             customPageControl = LLFilledPageControl.init(frame: CGRect.zero)
-            customPageControl?.tintColor = customPageControlTintColor
-            (customPageControl as! LLFilledPageControl).indicatorPadding = customPageControlIndicatorPadding
-            (customPageControl as! LLFilledPageControl).indicatorRadius = FillPageControlIndicatorRadius
+            customPageControl?.tintColor =  pageControlSetting.customPageControlTintColor
+            (customPageControl as! LLFilledPageControl).indicatorPadding = pageControlSetting.customPageControlIndicatorPadding
+            (customPageControl as! LLFilledPageControl).indicatorRadius = pageControlSetting.fillPageControlIndicatorRadius
             (customPageControl as! LLFilledPageControl).pageCount = self.imagePaths.count
             self.addSubview(customPageControl!)
         }
 
         if customPageControlStyle == .pill {
             customPageControl = LLPillPageControl.init(frame: CGRect.zero)
-            (customPageControl as! LLPillPageControl).indicatorPadding = customPageControlIndicatorPadding
-            (customPageControl as! LLPillPageControl).activeTint = customPageControlTintColor
-            (customPageControl as! LLPillPageControl).inactiveTint = customPageControlInActiveTintColor
+            (customPageControl as! LLPillPageControl).indicatorPadding = pageControlSetting.customPageControlIndicatorPadding
+            (customPageControl as! LLPillPageControl).activeTint = pageControlSetting.customPageControlTintColor
+            (customPageControl as! LLPillPageControl).inactiveTint = pageControlSetting.customPageControlInActiveTintColor
             (customPageControl as! LLPillPageControl).pageCount = self.imagePaths.count
             self.addSubview(customPageControl!)
         }
 
         if customPageControlStyle == .snake {
             customPageControl = LLSnakePageControl.init(frame: CGRect.zero)
-            (customPageControl as! LLSnakePageControl).activeTint = customPageControlTintColor
-            (customPageControl as! LLSnakePageControl).indicatorPadding = customPageControlIndicatorPadding
-            (customPageControl as! LLSnakePageControl).indicatorRadius = FillPageControlIndicatorRadius
-            (customPageControl as! LLSnakePageControl).inactiveTint = customPageControlInActiveTintColor
+            (customPageControl as! LLSnakePageControl).activeTint = pageControlSetting.customPageControlTintColor
+            (customPageControl as! LLSnakePageControl).indicatorPadding = pageControlSetting.customPageControlIndicatorPadding
+            (customPageControl as! LLSnakePageControl).indicatorRadius = pageControlSetting.fillPageControlIndicatorRadius
+            (customPageControl as! LLSnakePageControl).inactiveTint = pageControlSetting.customPageControlInActiveTintColor
             (customPageControl as! LLSnakePageControl).pageCount = self.imagePaths.count
             self.addSubview(customPageControl!)
         }
@@ -457,10 +376,10 @@ extension LLCycleScrollView {
             pageControl?.pageIndicatorTintColor = UIColor.clear
             pageControl?.currentPageIndicatorTintColor = UIColor.clear
 
-            if let activeImage = pageControlActiveImage {
+            if let activeImage = pageControlSetting.pageControlActiveImage {
                 (pageControl as? LLImagePageControl)?.dotActiveImage = activeImage
             }
-            if let inActiveImage = pageControlInActiveImage {
+            if let inActiveImage = pageControlSetting.pageControlInActiveImage {
                 (pageControl as? LLImagePageControl)?.dotInActiveImage = inActiveImage
             }
 
@@ -652,13 +571,13 @@ extension LLCycleScrollView: UICollectionViewDelegate, UICollectionViewDataSourc
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: LLCycleScrollViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! LLCycleScrollViewCell
         // Setting
-        cell.titleFont = font
-        cell.titleLabelTextColor = textColor
-        cell.titleBackViewBackgroundColor = titleBackgroundColor
-        cell.titleLines = numberOfLines
+        cell.titleFont = labelSetting.font
+        cell.titleLabelTextColor = labelSetting.textColor
+        cell.titleBackViewBackgroundColor = labelSetting.titleBackgroundColor
+        cell.titleLines = labelSetting.numberOfLines
 
         // Leading
-        cell.titleLabelLeading = titleLeading
+        cell.titleLabelLeading = labelSetting.titleLeading
 
         // Only Title
         if isOnlyTitle && titles.count > 0 {

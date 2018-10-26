@@ -58,14 +58,19 @@ class ViewController: UIViewController {
             print("当前点击文本的位置为:\(index)")
         }
 
-        titleDemo.customPageControlStyle = .none
+        var setting = PageControlSetting()
+        setting.customPageControlStyle = .none
+        titleDemo.pageControlSetting = setting
         titleDemo.scrollDirection = .vertical
-        titleDemo.font = UIFont.systemFont(ofSize: 13)
-        titleDemo.textColor = UIColor.white
-        titleDemo.titleBackgroundColor = UIColor.red
-        titleDemo.numberOfLines = 2
+
+        var labelSetting = LabelSetting()
+        labelSetting.font = UIFont.systemFont(ofSize: 13)
+        labelSetting.textColor = UIColor.white
+        labelSetting.titleBackgroundColor = UIColor.red
+        labelSetting.numberOfLines = 2
         // 文本　Leading约束
-        titleDemo.titleLeading = 30
+        labelSetting.titleLeading = 30
+        titleDemo.labelSetting = labelSetting
         scrollView.addSubview(titleDemo)
 
         // Demo--点击回调
@@ -73,9 +78,12 @@ class ViewController: UIViewController {
             print("当前点击图片的位置为:\(index)")
         }
 
-        bannerDemo.customPageControlStyle = .fill
-        bannerDemo.customPageControlInActiveTintColor = UIColor.red
-        bannerDemo.pageControlPosition = .left
+        var settingDemo = PageControlSetting()
+        settingDemo.customPageControlStyle = .fill
+        settingDemo.customPageControlInActiveTintColor = UIColor.red
+        settingDemo.pageControlPosition = .left
+        bannerDemo.pageControlSetting = settingDemo
+
         bannerDemo.pageControlLeadingOrTrialingContact = 28
 
         // 下边约束
@@ -90,8 +98,11 @@ class ViewController: UIViewController {
                                             titles: []) { (index) in
             print("当前点击图片的位置为:\(index)")
         }
-        bannerDemo1.customPageControlStyle = .snake
-        bannerDemo1.customPageControlInActiveTintColor = UIColor.red
+
+        var setting01 = PageControlSetting()
+        setting01.customPageControlStyle = .snake
+        setting01.customPageControlInActiveTintColor = UIColor.red
+        bannerDemo1.pageControlSetting = setting01
         bannerDemo1.pageControlPosition = .center
         bannerDemo1.pageControlLeadingOrTrialingContact = 28
 

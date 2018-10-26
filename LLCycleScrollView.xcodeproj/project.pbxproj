@@ -23,6 +23,7 @@
 		3F8A784B1DEBD8890076B482 /* LLSnakePageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8A78481DEBD8890076B482 /* LLSnakePageControl.swift */; };
 		3FAA674E1DE568F7005DE6BE /* LLCycleScrollView.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3FAA674D1DE568F7005DE6BE /* LLCycleScrollView.bundle */; };
 		BEEEB05FCD6E3BDA7F685CE3 /* Pods_LLCycleScrollView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD792C2CC145BEFF068D66D8 /* Pods_LLCycleScrollView.framework */; };
+		E0A4A32D2182F1A500B1038E /* LLCycleScrollView+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A4A32C2182F1A500B1038E /* LLCycleScrollView+Helper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		3FAA674D1DE568F7005DE6BE /* LLCycleScrollView.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LLCycleScrollView.bundle; sourceTree = "<group>"; };
 		ABACABAC0CB22999D0823E66 /* Pods-LLCycleScrollView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LLCycleScrollView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LLCycleScrollView/Pods-LLCycleScrollView.debug.xcconfig"; sourceTree = "<group>"; };
 		BD792C2CC145BEFF068D66D8 /* Pods_LLCycleScrollView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LLCycleScrollView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0A4A32C2182F1A500B1038E /* LLCycleScrollView+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LLCycleScrollView+Helper.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 			children = (
 				3F56C10D1DE44F1800904CF8 /* LLCycleScrollViewCell.swift */,
 				3F56C10B1DE4428900904CF8 /* LLCycleScrollView.swift */,
+				E0A4A32C2182F1A500B1038E /* LLCycleScrollView+Helper.swift */,
 				3F56C1091DE4418900904CF8 /* LLViewExtensions.swift */,
 				3F8A78461DEBD8890076B482 /* LLFilledPageControl.swift */,
 				3F8A78471DEBD8890076B482 /* LLPillPageControl.swift */,
@@ -277,6 +280,7 @@
 				3F4F4C221FBECD3900675D92 /* LLImagePageControl.swift in Sources */,
 				3F8A78491DEBD8890076B482 /* LLFilledPageControl.swift in Sources */,
 				3F56C10C1DE4428900904CF8 /* LLCycleScrollView.swift in Sources */,
+				E0A4A32D2182F1A500B1038E /* LLCycleScrollView+Helper.swift in Sources */,
 				3F56C10E1DE44F1800904CF8 /* LLCycleScrollViewCell.swift in Sources */,
 				3F56C10A1DE4418900904CF8 /* LLViewExtensions.swift in Sources */,
 			);
